@@ -8,7 +8,6 @@ const {
 } = (function () {
 
     const variables = Array.from('xyz');
-    const ops = [];
     const operations = {
         '+': Add,
         '-': Subtract,
