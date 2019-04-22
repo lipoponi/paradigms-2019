@@ -13,8 +13,10 @@
 (def negate (operation -))
 (def min (operation minimum))
 (def max (operation maximum))
+(def square (operation #(* % %)))
+(def sqrt (operation #(Math/sqrt (Math/abs %))))
 
-(def operations {'+ add '- subtract '* multiply '/ divide 'negate negate 'min min 'max max})
+(def operations {'+ add '- subtract '* multiply '/ divide 'negate negate 'min min 'max max 'square square 'sqrt sqrt})
 
 
 (defn parse [unit] (cond
