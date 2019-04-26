@@ -49,7 +49,7 @@ public abstract class Md2HtmlSource {
         try {
             this.close();
         } catch (IOException e) {
-            throw error("HUI ZNAET", e.getMessage());
+            throw error("File close error", e.getMessage());
         }
     }
 }
