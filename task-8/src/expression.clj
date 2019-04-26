@@ -15,8 +15,10 @@
 (def max (operation maximum))
 (def square (operation #(* % %)))
 (def sqrt (operation #(Math/sqrt (Math/abs %))))
+(def med (operation (fn [& xs] ((sort xs) (/ (count xs) 2)))))
+(def avg (operation (fn [& xs] (/ (apply + xs) (count xs)))))
 
-(def operations {'+ add '- subtract '* multiply '/ divide 'negate negate 'min min 'max max 'square square 'sqrt sqrt})
+(def operations {'+ add '- subtract '* multiply '/ divide 'negate negate 'min min 'max max 'square square 'sqrt sqrt 'med med 'avg avg})
 
 
 (defn parse [unit] (cond
