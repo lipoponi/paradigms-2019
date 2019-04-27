@@ -11,13 +11,13 @@ import java.util.Optional;
  */
 public class ClojureEngine implements Engine {
     public static final IFn HASH_MAP = Clojure.var("clojure.core", "hash-map");
-    public static final ClojureScript.F<IFn> EVAL = ClojureScript.function("eval", IFn.class);
+    public static final ClojureScript.F<Object> EVAL = ClojureScript.function("eval", Object.class);
     private final ClojureScript.F<String> TO_STRING = ClojureScript.function("toString", String.class);
     private final ClojureScript.F<Object> READ_STRING = ClojureScript.function("read-string", Object.class);
 
     private final Optional<IFn> evaluate;
     private final String evaluateString;
-    private Result<IFn> parsed;
+    private Result<Object> parsed;
     private String expression;
 
     public ClojureEngine(final String script, final Optional<String> evaluate) {
@@ -39,7 +39,7 @@ public class ClojureEngine implements Engine {
         final String context = String.format("(%sexpr %s)\nwhere expr = %s", evaluateString, map, expression);
         return evaluate
                 .map(f -> ClojureScript.call(f, new Object[]{parsed.value, map}, Number.class, context))
-                .orElseGet(() -> ClojureScript.call(parsed.value, new Object[]{map}, Number.class, context));
+                .orElseGet(() -> ClojureScript.call((IFn) parsed.value, new Object[]{map}, Number.class, context));
     }
 
     public Result<String> parsedToString() {
