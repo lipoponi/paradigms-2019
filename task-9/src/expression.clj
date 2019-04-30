@@ -6,7 +6,7 @@
 
 
 
-(declare Constant Variable Add Subtract Multiply Divide Negate Square Sqrt Signum)
+(declare Constant Variable Add Subtract Multiply Divide Negate Square Sqrt Signum Sinh Cosh)
 
 (defn evaluate [expression mapping] (call-method expression :evaluate mapping))
 (defn toString [expression] (call-method expression :toString))
@@ -98,10 +98,26 @@
   (Operation
     {:perform   #(Math/signum %)
      :represent "signum"}))
+(def Sinh
+  (Operation
+    {:perform   #(Math/sinh %)
+     :represent "sinh"
+     :diff      (fn [this diff-variable]
+                  (let [f (nth (get-field this :inners) 0)
+                        df (nth (call-method this :diff-inners diff-variable) 0)]
+                    (Multiply df (Cosh f))))}))
+(def Cosh
+  (Operation
+    {:perform   #(Math/cosh %)
+     :represent "cosh"
+     :diff      (fn [this diff-variable]
+                  (let [f (nth (get-field this :inners) 0)
+                        df (nth (call-method this :diff-inners diff-variable) 0)]
+                    (Multiply df (Sinh f))))}))
 
 
 
-(def operations {'+ Add '- Subtract '* Multiply '/ Divide 'negate Negate 'square Square 'sqrt Sqrt})
+(def operations {'+ Add '- Subtract '* Multiply '/ Divide 'negate Negate 'square Square 'sqrt Sqrt 'sinh Sinh 'cosh Cosh})
 
 (defn parseObject [unit] (cond
                            (string? unit) (parseObject (read-string unit))
