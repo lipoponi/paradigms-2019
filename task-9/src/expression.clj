@@ -6,7 +6,7 @@
 
 
 
-(declare Constant Variable Add Subtract Multiply Divide Negate)
+(declare Constant Variable Add Subtract Multiply Divide Negate Square Sqrt Signum)
 
 (defn evaluate [expression mapping] (call-method expression :evaluate mapping))
 (defn toString [expression] (call-method expression :toString))
@@ -78,10 +78,30 @@
     {:perform   -
      :represent "negate"
      :diff      (fn [this diff-variable] (apply Negate (call-method this :diff-inners diff-variable)))}))
+(def Square
+  (Operation
+    {:perform   #(* % %)
+     :represent "square"
+     :diff      (fn [this diff-variable]
+                  (let [f (nth (get-field this :inners) 0)
+                        df (nth (call-method this :diff-inners diff-variable) 0)]
+                    (Multiply (Constant 2) df f)))}))
+(def Sqrt
+  (Operation
+    {:perform   #(Math/sqrt (Math/abs %))
+     :represent "sqrt"
+     :diff      (fn [this diff-variable]
+                  (let [f (nth (get-field this :inners) 0)
+                        df (nth (call-method this :diff-inners diff-variable) 0)]
+                    (Divide (Multiply (Signum f) df) (Multiply (Constant 2) (Sqrt f)))))}))
+(def Signum
+  (Operation
+    {:perform   #(Math/signum %)
+     :represent "signum"}))
 
 
 
-(def operations {'+ Add '- Subtract '* Multiply '/ Divide 'negate Negate})
+(def operations {'+ Add '- Subtract '* Multiply '/ Divide 'negate Negate 'square Square 'sqrt Sqrt})
 
 (defn parseObject [unit] (cond
                            (string? unit) (parseObject (read-string unit))
