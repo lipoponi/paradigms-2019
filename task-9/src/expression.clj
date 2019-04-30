@@ -83,8 +83,8 @@
 
 (def operations {'+ Add '- Subtract '* Multiply '/ Divide 'negate Negate})
 
-(defn parsePostfix [unit] (cond
-                            (number? unit) (Constant unit)
-                            (symbol? unit) (Variable (str unit))
-                            (list? unit) (apply (operations (first unit)) (map parsePostfix (rest unit)))))
-(defn parseObject [expression] (parsePostfix (read-string expression)))
+(defn parseObject [unit] (cond
+                           (string? unit) (parseObject (read-string unit))
+                           (number? unit) (Constant unit)
+                           (symbol? unit) (Variable (str unit))
+                           (list? unit) (apply (operations (first unit)) (map parseObject (rest unit)))))
