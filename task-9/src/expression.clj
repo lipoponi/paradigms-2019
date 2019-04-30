@@ -57,12 +57,22 @@
   (Operation
     {:perform   *
      :represent "*"
-     :diff      (fn [this diff-variable] nil)}))            ;TODO
+     :diff      (fn [this diff-variable]
+                  (let [inners (get-field this :inners)
+                        diff-inners (call-method this :diff-inners diff-variable)]
+                    (Add
+                      (Multiply (nth inners 0) (nth diff-inners 1))
+                      (Multiply (nth diff-inners 0) (nth inners 1)))))}))
 (def Divide
   (Operation
     {:perform   (fn [a & xs] (/ (double a) (apply * xs)))
      :represent "/"
-     :diff      (fn [this diff-variable] nil)}))            ;TODO
+     :diff      (fn [this diff-variable]
+                  (let [inners (get-field this :inners)
+                        diff-inners (call-method this :diff-inners diff-variable)]
+                    (Divide
+                      (Subtract (Multiply (nth diff-inners 0) (nth inners 1)) (Multiply (nth inners 0) (nth diff-inners 1)))
+                      (Multiply (nth inners 1) (nth inners 1)))))}))
 (def Negate
   (Operation
     {:perform   -
