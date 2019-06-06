@@ -1,0 +1,4 @@
+enum CellFilling {
+    CROSS,
+    NOUGHT
+}
